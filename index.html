@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#c9dfce" />
+  <title>Whispering Wilds — A Clan Cat Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game-shell">
+    <canvas id="scene" aria-label="3D forest game"></canvas>
+    <div class="vignette"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Whispering Wilds home"><span class="brand-mark">✿</span><span>WHISPERING<br><b>WILDS</b></span></a>
+      <div class="location-pill"><span class="location-dot"></span><span id="location-name">ThunderClan · Forest Clearing</span><span class="weather">☀ <span id="weather-name">Golden hour</span></span></div>
+      <button class="icon-button map-toggle" id="map-toggle" aria-label="Open territory map">⌖</button>
+    </header>
+
+    <section class="intro-card" id="intro-card">
+      <div class="eyebrow">A small story in the forest</div>
+      <h1>Find your place<br>among the <i>clans.</i></h1>
+      <p>Wander through four wild territories, meet the cats who call them home, and follow the quiet paths between.</p>
+      <button class="primary-button" id="begin-button">Step into the wild <span>→</span></button>
+      <div class="intro-note"><span>✦</span> A peaceful, open-ended adventure</div>
+    </section>
+
+    <aside class="quest-card" id="quest-card" hidden>
+      <div class="quest-label">YOUR LITTLE JOURNEY <span>✦</span></div>
+      <div class="quest-title" id="quest-title">Say hello to a clan cat</div>
+      <div class="quest-progress"><span id="quest-progress"></span></div>
+      <div class="quest-foot"><span id="quest-foot-text">Explore the clearing</span><span id="paw-count">0 / 4</span></div>
+    </aside>
+
+    <div class="side-actions" id="side-actions" hidden>
+      <button class="round-button" id="journal-button"><span>☷</span><small>Journal</small></button>
+      <button class="round-button" id="sound-button"><span>♫</span><small>Sound on</small></button>
+    </div>
+
+    <div class="nearby-hint" id="nearby-hint" hidden><span>✦</span> <b id="nearby-name">A cat</b> is nearby <kbd>E</kbd></div>
+    <div class="toast" id="toast" aria-live="polite"></div>
+
+    <div class="controls-hint" id="controls-hint" hidden><span>WASD</span> to wander <i>·</i> <span>Drag</span> to look around <i>·</i> <span>E</span> to greet</div>
+
+    <section class="bottom-ui" id="bottom-ui" hidden>
+      <div class="player-chip"><div class="player-avatar">🐾</div><div><b>Little Fern</b><small>Curious apprentice</small></div><span class="level-badge">✦ 1</span></div>
+      <div class="territory-tabs" id="territory-tabs" aria-label="Choose a territory"></div>
+      <button class="map-button" id="map-button"><span>⌖</span> Territories</button>
+    </section>
+
+    <div class="mobile-controls" id="mobile-controls" hidden>
+      <div class="joystick" id="joystick"><div class="stick" id="stick"></div></div>
+      <button class="interact-button" id="touch-interact" aria-label="Interact">✦<small>Greet</small></button>
+    </div>
+
+    <div class="modal-backdrop" id="map-modal" hidden>
+      <section class="modal-panel map-panel" role="dialog" aria-modal="true" aria-labelledby="map-title">
+        <button class="close-button" data-close>×</button>
+        <div class="eyebrow">Follow the old trails</div><h2 id="map-title">Four territories,<br><i>one big forest.</i></h2>
+        <p>Choose a place to wander. Every territory has a camp, its own little community, and a trail to explore.</p>
+        <div class="territory-grid" id="territory-grid"></div>
+        <div class="modal-footnote">The forest is yours to explore at your own pace.</div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="journal-modal" hidden>
+      <section class="modal-panel journal-panel" role="dialog" aria-modal="true" aria-labelledby="journal-title">
+        <button class="close-button" data-close>×</button><div class="eyebrow">Notes from the trail</div><h2 id="journal-title">Little Fern's <i>journal</i></h2>
+        <div class="journal-stats"><div><b id="journal-greetings">0</b><small>cats greeted</small></div><div><b id="journal-visits">1</b><small>territories visited</small></div><div><b id="journal-secrets">0</b><small>forest finds</small></div></div>
+        <div class="journal-entry"><span class="entry-icon">🌿</span><div><b>First steps</b><p>The ferns rustle softly. There are so many cats to meet and trails to follow.</p></div></div>
+        <div class="journal-entry"><span class="entry-icon">🐾</span><div><b id="journal-last-title">A blank page</b><p id="journal-last">Go say hello to a cat to begin filling these pages.</p></div></div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="dialog-modal" hidden>
+      <section class="modal-panel dialogue-panel" role="dialog" aria-modal="true" aria-labelledby="dialog-name">
+        <button class="close-button" data-close>×</button><div class="dialog-cat" id="dialog-cat">🐈</div>
+        <div class="eyebrow" id="dialog-role">THUNDERCLAN · WARRIOR</div><h2 id="dialog-name">Alderheart</h2>
+        <p class="cat-details" id="dialog-details">A kind face peers out from beneath the bracken.</p>
+        <blockquote id="dialog-quote">“The forest has a way of showing you what you need, if you take the time to look.”</blockquote>
+        <button class="primary-button dialog-next" id="dialog-next">Thank you <span>→</span></button>
+      </section>
+    </div>
+
+    <div class="loading-screen" id="loading-screen"><div class="loading-mark">✿</div><div>Waking up the forest…</div><div class="loading-bar"><span></span></div></div>
+  </main>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js"}}</script>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
